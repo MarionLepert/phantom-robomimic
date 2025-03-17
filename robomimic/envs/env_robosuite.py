@@ -4,6 +4,7 @@ to provide a standardized environment API for training policies and interacting
 with metadata present in datasets.
 """
 import json
+import os
 import numpy as np
 from copy import deepcopy
 
@@ -237,9 +238,19 @@ class EnvRobosuite(EB.EnvBase):
                 ret[k] = self.get_real_depth_map(ret[k])
                 if self.postprocess_visual_obs:
                     ret[k] = ObsUtils.process_obs(obs=ret[k], obs_key=k)
+            elif k == "frontview_segmentation_instance" or k == "agentview_segmentation_instance":
+                ret[k] = di[k][::-1]
+                if len(ret[k].shape) == 2:
+                    ret[k] = ret[k][..., None] # (H, W, 1)
+            elif k == "frontview_depth" or "agentview_depth":
+                ret[k] = di[k][::-1]
+                if len(ret[k].shape) == 2:
+                    ret[k] = ret[k][..., None] # (H, W, 1)
+            
 
         # "object" key contains object information
-        ret["object"] = np.array(di["object-state"])
+        if "object-state" in di:
+            ret["object"] = np.array(di["object-state"])
 
         if self._is_v1:
             for robot in self.env.robots:
