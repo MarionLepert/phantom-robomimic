@@ -215,13 +215,11 @@ class EnvRobosuite(EB.EnvBase):
         ret = {}
         for k in di:
             if (k in ObsUtils.OBS_KEYS_TO_MODALITIES) and ObsUtils.key_is_obs_modality(key=k, obs_modality="rgb"):
-                # by default images from mujoco are flipped in height
-                ret[k] = di[k][::-1]
+                ret[k] = di[k]
                 if self.postprocess_visual_obs:
                     ret[k] = ObsUtils.process_obs(obs=ret[k], obs_key=k)
             elif (k in ObsUtils.OBS_KEYS_TO_MODALITIES) and ObsUtils.key_is_obs_modality(key=k, obs_modality="depth"):
-                # by default depth images from mujoco are flipped in height
-                ret[k] = di[k][::-1]
+                ret[k] = di[k]
                 if len(ret[k].shape) == 2:
                     ret[k] = ret[k][..., None] # (H, W, 1)
                 assert len(ret[k].shape) == 3
@@ -230,7 +228,7 @@ class EnvRobosuite(EB.EnvBase):
                 if self.postprocess_visual_obs:
                     ret[k] = ObsUtils.process_obs(obs=ret[k], obs_key=k)
             elif (k in ObsUtils.OBS_KEYS_TO_MODALITIES) and ObsUtils.key_is_obs_modality(key=k, obs_modality="depth"):
-                ret[k] = di[k][::-1]
+                ret[k] = di[k]
                 if len(ret[k].shape) == 2:
                     ret[k] = ret[k][..., None] # (H, W, 1)
                 assert len(ret[k].shape) == 3
@@ -239,17 +237,17 @@ class EnvRobosuite(EB.EnvBase):
                 if self.postprocess_visual_obs:
                     ret[k] = ObsUtils.process_obs(obs=ret[k], obs_key=k)
             elif k == "frontview_segmentation_instance" or k == "agentview_segmentation_instance":
-                ret[k] = di[k][::-1]
+                ret[k] = di[k]
                 if len(ret[k].shape) == 2:
                     ret[k] = ret[k][..., None] # (H, W, 1)
             elif k == "frontview_depth" or "agentview_depth":
-                ret[k] = di[k][::-1]
+                ret[k] = di[k]
                 if len(ret[k].shape) == 2:
                     ret[k] = ret[k][..., None] # (H, W, 1)
             
 
         # "object" key contains object information
-        if "object-state" in di:
+        if "object-state" in di.keys():
             ret["object"] = np.array(di["object-state"])
 
         if self._is_v1:

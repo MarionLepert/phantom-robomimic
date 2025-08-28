@@ -16,6 +16,8 @@ class EnvType:
     IG_MOMART_TYPE = 3
     REAL_TYPE = 6
     GPRS_REAL_TYPE = 7
+    REAL_UR5E_TYPE = 8
+    REAL_KINOVA_TYPE = 9
 
 
 class EnvBase(abc.ABC):
